@@ -1,6 +1,6 @@
 .title-bar a {
   color: #FFFFFF;
-  background-color: #00000000;
+  background-color: rgba(0,0,0,0);
   text-shadow: 2px 2px #010101;
   text-decoration: none;
   font-size: 2em;
