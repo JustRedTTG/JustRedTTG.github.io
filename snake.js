@@ -245,6 +245,7 @@ document.addEventListener('touchmove', touch_handler, {passive: false});
 document.addEventListener('touchend', touch_handler, {passive: false});
 
 function touch_handler(event) {
+  if (!board_context) {return;}
   if (event.touches.length > 0 && event.touches[0].clientY > h - $(footer).height()) {return;}
   if (game_over && event.type == 'touchstart') {
     var time = +new Date;
