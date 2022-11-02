@@ -8,6 +8,7 @@ var board_pixel_size;
 var board_element;
 var score_text;
 var game_over_text;
+var footer;
 var board_context;
 var board;
 var snake_size;
@@ -27,14 +28,14 @@ function resize() {
   w = $(window).width();
   h = $(window).height()-20;
   if (w > h){
-    offset_x = Math.max(w / 2 - h / 2);
-    board_pixel_size = Math.max(h / board_size);
-    offset_y = Math.max(h / 2 - (board_size * board_pixel_size) / 2);
+    offset_x = Math.floor(w / 2 - h / 2);
+    board_pixel_size = Math.floor(h / board_size);
+    offset_y = Math.floor(h / 2 - (board_size * board_pixel_size) / 2);
   }
   else {
-    offset_y = Math.max(h / 2 - w / 2);
-    board_pixel_size = Math.max(w / board_size);
-    offset_x = Math.max(w / 2 - (board_size * board_pixel_size) / 2);
+    offset_y = Math.floor(h / 2 - w / 2);
+    board_pixel_size = Math.floor(w / board_size);
+    offset_x = Math.floor(w / 2 - (board_size * board_pixel_size) / 2);
   }
   board_element.width = w;
   board_element.height = h;
@@ -57,6 +58,17 @@ function resize() {
   game_over_text.style.top = String(h/2 - game_over_text_font_size)+"px";
   score_text.style.fontSize = String(score_text_font_size)+"px";
   game_over_text.style.fontSize = String(game_over_text_font_size)+"px";
+  if (h > w){
+    footer_font_size = h/50;
+    footer.style.fontSize = String(footer_font_size)+"px";
+    footer.style.position = "absolute";
+    footer.style.top = String(h - footer_font_size)+"px";
+    footer.style.right = "0px";
+    footer.style.left = "0px";
+  } else {
+    footer.style.position = "";
+    footer.style.fontSize = "";
+  }
   board_context.fillStyle = "#202020";
   board_context.fillRect(0,0, w, h);
 }
@@ -80,6 +92,7 @@ function initialize_board() {
 window.onload = function() {
   console.log("Snake By Red");
   board_element = document.getElementById("canvas");
+  footer = document.getElementById("footer");
   score_text = document.getElementById("score_text");
   game_over_text = document.getElementById("game_over_text");
   board_context = board_element.getContext("2d");
@@ -253,6 +266,7 @@ function touch_handler(event) {
     }
     if (go_y > go_x) {direction_change_handler(direction_y);} else {direction_change_handler(direction_x);}
   } else if (event.touches.length < 1) {return;}
+  if (event.touches[0].clientY > $(canvas_element).height()) {return;}
   event.preventDefault();
   if (event.type == 'touchstart') {start_touch_x = event.touches[0].clientX; start_touch_y = event.touches[0].clientY;}
   if (event.type == 'touchmove') {end_touch_x = event.touches[0].clientX; end_touch_y = event.touches[0].clientY;}
