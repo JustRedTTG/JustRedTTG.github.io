@@ -14,8 +14,8 @@ var snake_size;
 var snake_direction;
 var snake_direction_change_chain = [];
 var enable_teleport = true;
-// var game_over = false;
-var game_over = true;
+var game_over = false;
+// var game_over = true;
 var time_in_milliseconds_till_movement = 120;
 
 function resize() {
