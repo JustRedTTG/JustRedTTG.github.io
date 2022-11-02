@@ -208,7 +208,19 @@ document.addEventListener('keydown', function(event) {
 
   if (new_snake_direction < 0 || game_over) {return;}
   event.preventDefault();
+  direction_change_handler(new_snake_direction)
+});
 
+document.addEventListener('touchstart', touch_handler, {passive: false});
+
+document.addEventListener('touchmove', touch_handler, {passive: false});
+
+function touch_handler(event) {
+  
+  event.preventDefault();
+}
+
+function direction_change_handler( new_snake_direction){
   var old_snake_direction = snake_direction
 
   if (snake_direction_change_chain.length > 0) {
@@ -222,6 +234,5 @@ document.addEventListener('keydown', function(event) {
   var [xi, yi, teleported] = get_next_snake_position();
   snake_direction = old_snake_direction;
   if (teleported) {return;}
-  if (board[xi][yi] != 2) {snake_direction_change_chain.push(new_snake_direction)}
-
-});
+  if (board[xi][yi] != 2) {snake_direction_change_chain.push(new_snake_direction)}  
+}
