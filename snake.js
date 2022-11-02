@@ -16,6 +16,7 @@ var snake_direction_change_chain = [];
 var enable_teleport = true;
 var game_over = false;
 // var game_over = true;
+var game_over_time;
 var time_in_milliseconds_till_movement = 120;
 var start_touch_x;
 var start_touch_y;
@@ -73,6 +74,7 @@ function initialize_board() {
   board[Math.floor(board_size - board_size/3)][Math.floor(board_size/2)] = -1;
   snake_size = snake_begin_size;
   snake_direction = 1;
+  game_over_text.style.display = "none";
 }
 
 window.onload = function() {
@@ -80,7 +82,6 @@ window.onload = function() {
   board_element = document.getElementById("canvas");
   score_text = document.getElementById("score_text");
   game_over_text = document.getElementById("game_over_text");
-  game_over_text.style.display = "none";
   board_context = board_element.getContext("2d");
   resize();
   initialize_board();
@@ -147,8 +148,8 @@ function move_snake() {
     for (var yi = 0; yi < board_size; yi++) {
       if (board[xi][yi] > 0) {board[xi][yi] ++;}
   }}
-  if (teleported && !enable_teleport) {game_over = true;}
-  else if (1 < board[next_xi][next_yi] && board[next_xi][next_yi] <= snake_size) {game_over = true;}
+  if (teleported && !enable_teleport) {end_game();}
+  else if (1 < board[next_xi][next_yi] && board[next_xi][next_yi] <= snake_size) {end_game();}
   else {
     if (board[next_xi][next_yi] == -1) {
       snake_size ++;
@@ -222,6 +223,13 @@ document.addEventListener('touchmove', touch_handler, {passive: false});
 document.addEventListener('touchend', touch_handler, {passive: false});
 
 function touch_handler(event) {
+  if (game_over && event.type == 'touchstart') {
+    var time = +new Date;
+    if (time - game_over_time < 1) {return;}
+    game_over = false;
+    initialize_board();
+    return;
+  }
   if (event.type == 'touchend') {
     var go_x = 0;
     var direction_x = -1;
@@ -265,4 +273,9 @@ function direction_change_handler(new_snake_direction){
   snake_direction = old_snake_direction;
   if (teleported) {return;}
   if (board[xi][yi] != 2) {snake_direction_change_chain.push(new_snake_direction)}
+}
+
+function end_game() {
+  game_over_time = +new Date;
+  game_over = true;
 }
