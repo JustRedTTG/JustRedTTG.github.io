@@ -225,7 +225,7 @@ document.addEventListener('touchend', touch_handler, {passive: false});
 function touch_handler(event) {
   if (game_over && event.type == 'touchstart') {
     var time = +new Date;
-    if (time - game_over_time < 200) {return;}
+    if (time - game_over_time < 1000) {return;}
     game_over = false;
     initialize_board();
     return;
