@@ -236,6 +236,7 @@ document.addEventListener('touchmove', touch_handler, {passive: false});
 document.addEventListener('touchend', touch_handler, {passive: false});
 
 function touch_handler(event) {
+  if (event.touches.length > 0 && event.touches[0].clientY > h - $(footer).height()) {return;}
   if (game_over && event.type == 'touchstart') {
     var time = +new Date;
     if (time - game_over_time < 1000) {return;}
@@ -265,11 +266,11 @@ function touch_handler(event) {
       direction_y = 0;
     }
     if (go_y > go_x) {direction_change_handler(direction_y);} else {direction_change_handler(direction_x);}
+    return;
   } else if (event.touches.length < 1) {return;}
-  if (event.touches[0].clientY > $(canvas_element).height()) {return;}
   event.preventDefault();
   if (event.type == 'touchstart') {start_touch_x = event.touches[0].clientX; start_touch_y = event.touches[0].clientY;}
-  if (event.type == 'touchmove') {end_touch_x = event.touches[0].clientX; end_touch_y = event.touches[0].clientY;}
+  else if (event.type == 'touchmove') {end_touch_x = event.touches[0].clientX; end_touch_y = event.touches[0].clientY;}
 }
 
 function direction_change_handler(new_snake_direction){
