@@ -6,9 +6,25 @@
     <link rel="stylesheet" href="basic.css">
   </head>
   <body style="padding: 0px; margin: 0px; background-color: #202020;">
-    <canvas id="canvas" width="300" height="300" style="padding: 0px; margin: 0px;"></canvas>
+    <canvas id="canvas" width="1000" height="1000" style="padding: 0px; margin: 0px;"></canvas>
+    <h1 id="score_text" class="text">SCORE</h1>
+    <h1 id="game_over_text" class="text" style="color: red;">Game Over</h1>
+    <!-- <h1>Paused</h1> -->
     <p style="padding: 0px; margin: 0px; font-size: 3mm; color: #c71585; text-align: center;">Snake - Made by Red. <a style="color: aqua; text-decoration: none;" href="https://github.com/JustRedTTG/easy-snake">Original</a></p>
   </body>
   <script src="snake.js" type="text/javascript"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <style>
+    @font-face {
+      font-family: 'retro'; /* this value can be anything you wish - it gets used in the class definition below */
+      src: url('font.ttf'); /* add the file path to your font here */
+    }
+    .text {
+      position: absolute;
+      padding: 0px;
+      margin: 0px;
+      font-family: retro;
+      text-align: center;
+    }
+  </style>
 </html>

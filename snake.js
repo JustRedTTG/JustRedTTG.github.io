@@ -3,15 +3,20 @@ var h;
 var offset_x;
 var offset_y;
 var board_size = 25;
+var snake_begin_size = 3;
 var board_pixel_size;
 var board_element;
+var score_text;
+var game_over_text;
 var board_context;
 var board;
 var snake_size;
 var snake_direction;
 var snake_direction_change_chain = [];
 var enable_teleport = true;
-var game_over = false;
+// var game_over = false;
+var game_over = true;
+var time_in_milliseconds_till_movement = 120;
 
 function resize() {
   w = $(window).width();
@@ -28,6 +33,25 @@ function resize() {
   }
   board_element.width = w;
   board_element.height = h;
+  score_text.style.left = '0px';
+  game_over_text.style.left = String(offset_x)+"px";
+  if (w > h) {
+    score_text.style.right = String(w - offset_x)+"px";
+  } else {
+    score_text.style.right = "0px";
+  }
+  var score_text_font_size;
+  if (w > h) {
+    score_text_font_size = w * .035;
+    score_text.style.top = String(h/2 - score_text_font_size)+"px";
+  } else {
+    score_text_font_size = h * .04;
+    score_text.style.top = String(offset_y/2 - score_text_font_size)+"px";
+  }
+  var game_over_text_font_size = board_size * board_pixel_size * .133;
+  game_over_text.style.top = String(h/2 - game_over_text_font_size)+"px";
+  score_text.style.fontSize = String(score_text_font_size)+"px";
+  game_over_text.style.fontSize = String(game_over_text_font_size)+"px";
   board_context.fillStyle = "#202020";
   board_context.fillRect(0,0, w, h);
 }
@@ -43,17 +67,20 @@ function initialize_board() {
   }
   board[Math.floor(board_size/3)][Math.floor(board_size/2)] = 1;
   board[Math.floor(board_size - board_size/3)][Math.floor(board_size/2)] = -1;
-  snake_size = 3;
+  snake_size = snake_begin_size;
   snake_direction = 1;
 }
 
 window.onload = function() {
   console.log("Snake By Red");
   board_element = document.getElementById("canvas");
+  score_text = document.getElementById("score_text");
+  game_over_text = document.getElementById("game_over_text");
+  game_over_text.style.display = "none";
   board_context = board_element.getContext("2d");
   resize();
   initialize_board();
-  setInterval(game, 100);
+  setInterval(game, time_in_milliseconds_till_movement);
 }
 
 window.addEventListener("resize", () => {
@@ -67,6 +94,8 @@ function game() {
 
   draw_board();
   if (!game_over){move_snake();}
+  else {game_over_text.style.display = "";}
+  score_text.innerHTML = snake_size-snake_begin_size;
 }
 
 function draw_board() {
