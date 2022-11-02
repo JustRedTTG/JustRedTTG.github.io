@@ -75,7 +75,7 @@ function resize() {
     footer.style.left = "0px";
   } else {
     footer.style.position = "";
-    footer.style.fontSize = "";
+    footer.style.fontSize = "10px";
   }
   board_context.fillStyle = "#202020";
   board_context.fillRect(0,0, w, h);
