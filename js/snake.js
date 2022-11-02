@@ -296,7 +296,7 @@ function direction_change_handler(new_snake_direction){
 
   var [xi, yi, teleported] = get_next_snake_position();
   snake_direction = old_snake_direction;
-  if (teleported) {return;}
+  //if (teleported) {return;}
   if (board[xi][yi] != 2) {snake_direction_change_chain.push(new_snake_direction)}
 }
 
