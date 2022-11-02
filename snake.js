@@ -251,7 +251,6 @@ function touch_handler(event) {
 }
 
 function direction_change_handler(new_snake_direction){
-  console.log(new_snake_direction);
   var old_snake_direction = snake_direction
 
   if (snake_direction_change_chain.length > 0) {
