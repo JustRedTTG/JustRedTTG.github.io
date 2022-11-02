@@ -24,6 +24,14 @@ var start_touch_y;
 var end_touch_x;
 var end_touch_y;
 
+var snake_color = [0, 255, 0];
+var snake_color_final = [0, 55, 55];
+var snake_color_change = [
+  snake_color_final[0] - snake_color[0],
+  snake_color_final[1] - snake_color[1],
+  snake_color_final[2] - snake_color[2]
+];
+
 function resize() {
   w = $(window).width();
   h = $(window).height()-20;
@@ -129,12 +137,13 @@ function draw_board() {
         board_context.strokeStyle = "red";
         board_context.fillStyle = "red";
         board_context.beginPath();
-        board_context.ellipse(x_in_pixel + board_pixel_size / 2, y_in_pixel + board_pixel_size / 2, board_pixel_size / 2, board_pixel_size / 2, 0, 0, 2 * Math.PI);
+        board_context.ellipse(x_in_pixel + board_pixel_size / 2, y_in_pixel + Math.floor(board_pixel_size / 2), Math.floor(board_pixel_size / 2), board_pixel_size / 2, 0, 0, 2 * Math.PI);
         board_context.fill();
         board_context.stroke();
       }
       else if (0 < v && v <= snake_size) {
-        board_context.fillStyle = "green";
+        var [r, g, b] = calculate_snake_color(v);
+        board_context.fillStyle = "rgb("+String(r)+", "+String(g)+", "+String(b)+")";
         board_context.fillRect(x_in_pixel, y_in_pixel, board_pixel_size, board_pixel_size);
       }
       y_in_pixel += board_pixel_size;
@@ -294,3 +303,13 @@ function end_game() {
   game_over_time = +new Date;
   game_over = true;
 }
+
+function calculate_snake_color(snake_index) {
+    if (snake_index == 1) {return snake_color;}
+    var percent_of_change = snake_index / snake_size;
+    return [
+      snake_color[0] + snake_color_change[0] * percent_of_change,
+      snake_color[1] + snake_color_change[1] * percent_of_change,
+      snake_color[2] + snake_color_change[2] * percent_of_change,
+    ]
+ }
