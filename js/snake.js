@@ -31,10 +31,22 @@ var snake_color_change = [
   snake_color_final[1] - snake_color[1],
   snake_color_final[2] - snake_color[2]
 ];
+var auto_start = true;
+var enable_game_reset = true;
+var auto_start_on_input = true;
+var snake_started = false;
+const snakestart_event = new Event('snakestart');
+const snakeend_event = new Event('snakeend');
+const gameover_event = new Event('gameover');
+const drawboard_event = new Event('drawboard');
+const touch_game_reset_event = new Event('touch_game_reset');
+const keys_game_reset_event = new Event('keys_game_reset');
+const resize_event = new Event('resize');
+var game_interval;
 
-function resize() {
+function resize(onload = false) {
   w = $(window).width();
-  h = $(window).height()-20;
+  h = $(window).height()-30;
   if (w > h){
     offset_x = Math.floor(w / 2 - h / 2);
     board_pixel_size = Math.floor(h / board_size);
@@ -49,6 +61,7 @@ function resize() {
   board_element.height = h;
   score_text.style.left = '0px';
   game_over_text.style.left = String(offset_x)+"px";
+  game_over_text.style.right = String(w - (offset_x + board_size * board_pixel_size) + 5)+"px";
   if (w > h) {
     score_text.style.right = String(w - offset_x)+"px";
   } else {
@@ -79,6 +92,9 @@ function resize() {
   }
   board_context.fillStyle = "#202020";
   board_context.fillRect(0,0, w, h);
+
+  if (!snake_started && !onload) {draw_board();}
+  document.dispatchEvent(resize_event);
 }
 
 function initialize_board() {
@@ -90,24 +106,28 @@ function initialize_board() {
     }
     board.push(arr);
   }
-  board[Math.floor(board_size/3)][Math.floor(board_size/2)] = 1;
+  var head_x = Math.floor(board_size/3);
+  var head_y = Math.floor(board_size/2);
+  board[head_x][head_y] = 1;
+  board[head_x-1][head_y] = 2;
+  board[head_x-2][head_y] = 3;
   board[Math.floor(board_size - board_size/3)][Math.floor(board_size/2)] = -1;
   snake_size = snake_begin_size;
   snake_direction = 1;
   game_over_text.style.display = "none";
 }
 
-window.onload = function() {
+$(document).ready(function() {
   console.log("Snake By Red");
   board_element = document.getElementById("canvas");
   footer = document.getElementById("footer");
   score_text = document.getElementById("score_text");
   game_over_text = document.getElementById("game_over_text");
   board_context = board_element.getContext("2d");
-  resize();
+  resize(true);
   initialize_board();
-  setInterval(game, time_in_milliseconds_till_movement);
-}
+  if (auto_start){ start_game(); } else { draw_board(); }
+})
 
 window.addEventListener("resize", () => {
   resize();
@@ -151,7 +171,7 @@ function draw_board() {
     x_in_pixel += board_pixel_size;
     y_in_pixel = offset_y;
   }
-
+  document.dispatchEvent(drawboard_event);
   board_context.strokeStyle = "white";
   board_context.beginPath();
   board_context.rect(offset_x,offset_y, board_size * board_pixel_size, board_size * board_pixel_size);
@@ -219,8 +239,12 @@ function generate_new_apple() {
 
 document.addEventListener('keydown', function(event) {
   var new_snake_direction = -1;
-
-  if (event.keyCode == 37 || event.keyCode == 65) { // Right
+  if (event.keyCode == 32 && game_over) {
+    if (!enable_game_reset) {document.dispatchEvent(keys_game_reset_event); return;}
+    reset_game();
+    return;
+  }
+  else if (event.keyCode == 37 || event.keyCode == 65) { // Right
       new_snake_direction = 3;
   }
   else if (event.keyCode == 39 || event.keyCode == 68) { // Left
@@ -234,6 +258,8 @@ document.addEventListener('keydown', function(event) {
   }
 
   if (new_snake_direction < 0 || game_over) {return;}
+  if (!snake_started && auto_start_on_input) {start_game();}
+  else if (!snake_started) {return;}
   event.preventDefault();
   direction_change_handler(new_snake_direction)
 });
@@ -250,17 +276,18 @@ function touch_handler(event) {
   if (game_over && event.type == 'touchstart') {
     var time = +new Date;
     if (time - game_over_time < 1000) {return;}
-    game_over = false;
-    initialize_board();
+    if (!enable_game_reset) {document.dispatchEvent(touch_game_reset_event); return;}
+    reset_game();
     return;
   }
   if (event.type == 'touchend') {
     touch_direction_handler();
     return;
   } else if (event.touches.length < 1) {return;}
-  event.preventDefault();
   if (event.type == 'touchstart') {start_touch_x = event.touches[0].clientX; start_touch_y = event.touches[0].clientY;}
   else if (event.type == 'touchmove') {end_touch_x = event.touches[0].clientX; end_touch_y = event.touches[0].clientY;}
+  if (!snake_started) {return;}
+  event.preventDefault();
 }
 
 function direction_change_handler(new_snake_direction){
@@ -277,12 +304,16 @@ function direction_change_handler(new_snake_direction){
   var [xi, yi, teleported] = get_next_snake_position();
   snake_direction = old_snake_direction;
   //if (teleported) {return;}
-  if (board[xi][yi] != 2) {snake_direction_change_chain.push(new_snake_direction)}
+  if (board[xi][yi] != 2 && snake_direction != new_snake_direction && new_snake_direction != snake_direction_change_chain[snake_direction_change_chain.length-1]) {
+    snake_direction_change_chain.push(new_snake_direction)
+  }
+  if (board[xi][yi] != 2 && !snake_started && auto_start_on_input) {start_game();}
 }
 
 function end_game() {
   game_over_time = +new Date;
   game_over = true;
+  document.dispatchEvent(gameover_event);
 }
 
 function calculate_snake_color(snake_index) {
@@ -317,4 +348,21 @@ function touch_direction_handler() {
     direction_y = 0;
   }
   if (go_y > go_x) {direction_change_handler(direction_y);} else {direction_change_handler(direction_x);}
+}
+
+function start_game() {
+  snake_started = true;
+  document.dispatchEvent(snakestart_event);
+  game_interval = setInterval(game, time_in_milliseconds_till_movement);
+}
+
+function reset_game () {
+  if (!auto_start || !enable_game_reset) {
+    document.dispatchEvent(snakeend_event);
+    clearInterval(game_interval);
+    snake_started = false;
+  }
+  game_over = false;
+  initialize_board();
+  draw_board();
 }
