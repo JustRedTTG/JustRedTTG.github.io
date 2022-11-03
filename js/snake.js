@@ -75,7 +75,7 @@ function resize() {
     footer.style.left = "0px";
   } else {
     footer.style.position = "";
-    footer.style.fontSize = "10px";
+    footer.style.fontSize = "";
   }
   board_context.fillStyle = "#202020";
   board_context.fillRect(0,0, w, h);
@@ -255,27 +255,7 @@ function touch_handler(event) {
     return;
   }
   if (event.type == 'touchend') {
-    var go_x = 0;
-    var direction_x = -1;
-    var go_y = 0;
-    var direction_y = -1;
-    if (start_touch_x < end_touch_x) { // Right
-      go_x = end_touch_x - start_touch_x;
-      direction_x = 1;
-    }
-    else { // Left
-      go_x = start_touch_x - end_touch_x;
-      direction_x = 3;
-    }
-    if (start_touch_y < end_touch_y) { // Down
-      go_y = end_touch_y - start_touch_y;
-      direction_y = 2;
-    }
-    else { // Up
-      go_y = start_touch_y - end_touch_y;
-      direction_y = 0;
-    }
-    if (go_y > go_x) {direction_change_handler(direction_y);} else {direction_change_handler(direction_x);}
+    touch_direction_handler();
     return;
   } else if (event.touches.length < 1) {return;}
   event.preventDefault();
@@ -314,3 +294,27 @@ function calculate_snake_color(snake_index) {
       snake_color[2] + snake_color_change[2] * percent_of_change,
     ]
  }
+
+function touch_direction_handler() {
+  var go_x = 0;
+  var direction_x = -1;
+  var go_y = 0;
+  var direction_y = -1;
+  if (start_touch_x < end_touch_x) { // Right
+    go_x = end_touch_x - start_touch_x;
+    direction_x = 1;
+  }
+  else { // Left
+    go_x = start_touch_x - end_touch_x;
+    direction_x = 3;
+  }
+  if (start_touch_y < end_touch_y) { // Down
+    go_y = end_touch_y - start_touch_y;
+    direction_y = 2;
+  }
+  else { // Up
+    go_y = start_touch_y - end_touch_y;
+    direction_y = 0;
+  }
+  if (go_y > go_x) {direction_change_handler(direction_y);} else {direction_change_handler(direction_x);}
+}
