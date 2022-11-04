@@ -8,6 +8,8 @@ var snakey_i = 0;
 var snakey_text = "Snake!";
 var information;
 var reset_information;
+var game_over_tap_time;
+
 auto_start = false;
 enable_game_reset = false;
 document.addEventListener('snakestart', function(event) { clearInterval(hi_inverval); console.log("Thanks for opening the sources or console, hack away! All the code is open source!") })
@@ -16,7 +18,11 @@ document.addEventListener('gameover', function(event) {reset_information.style.d
 
 document.addEventListener('drawboard', function(event) {shadow();})
 
-document.addEventListener('touch_game_reset', function(event) {reset_game();})
+document.addEventListener('touch_game_reset', function(event) {
+  var time = +new Date;
+  if (time - game_over_tap_time < 1000) {snake_direction = 1; return;}
+  reset_game();
+})
 
 document.addEventListener('resize', function(event) {if (information == null){return}calculate_information_position();})
 
@@ -34,6 +40,7 @@ document.addEventListener('keydown', function(event) {
     var time = +new Date;
     if (time - game_over_time < 1000) {return;}
     alpha = 0;
+    game_over_tap_time = +new Date;
     reset_game();
   } else if (!paused) {
     paused = true;
@@ -110,4 +117,6 @@ function calculate_information_position() {
   reset_information.style.top = String(offset_y + board_size * board_pixel_size * .75)+"px";
   reset_information.style.left = String(offset_x)+"px";
   reset_information.style.right = String(w - (offset_x + board_size * board_pixel_size) + 5)+"px";
+  information.style.fontSize = String(h/40)+"px";
+  reset_information.style.fontSize = String(h/40)+"px";
 }
