@@ -117,6 +117,7 @@ function calculate_information_position() {
   reset_information.style.top = String(offset_y + board_size * board_pixel_size * .75)+"px";
   reset_information.style.left = String(offset_x)+"px";
   reset_information.style.right = String(w - (offset_x + board_size * board_pixel_size) + 5)+"px";
-  information.style.fontSize = String(h/40)+"px";
-  reset_information.style.fontSize = String(h/40)+"px";
+  var information_fontSize = String((board_size * board_pixel_size)/25)+"px";
+  information.style.fontSize = information_fontSize;
+  reset_information.style.fontSize = information_fontSize;
 }
