@@ -18,6 +18,7 @@ var enable_teleport = true;
 var game_over = false;
 // var game_over = true;
 var game_over_time;
+var game_reset_time;
 var time_in_milliseconds_till_movement = 120;
 var start_touch_x;
 var start_touch_y;
@@ -307,7 +308,11 @@ function direction_change_handler(new_snake_direction){
   if (board[xi][yi] != 2 && snake_direction != new_snake_direction && new_snake_direction != snake_direction_change_chain[snake_direction_change_chain.length-1]) {
     snake_direction_change_chain.push(new_snake_direction)
   }
-  if (board[xi][yi] != 2 && !snake_started && auto_start_on_input) {start_game();}
+  if (board[xi][yi] != 2 && !snake_started && auto_start_on_input) {
+    var time = +new Date;
+    if (time - game_reset_time < 1000) {return;}
+    start_game();
+  }
 }
 
 function end_game() {
@@ -361,6 +366,7 @@ function reset_game () {
     document.dispatchEvent(snakeend_event);
     clearInterval(game_interval);
     snake_started = false;
+    game_reset_time = +new Date;
   }
   game_over = false;
   initialize_board();

@@ -13,22 +13,23 @@ var game_over_tap_time;
 auto_start = false;
 enable_game_reset = false;
 document.addEventListener('snakestart', function(event) { clearInterval(hi_inverval); console.log("Thanks for opening the sources or console, hack away! All the code is open source!") })
-document.addEventListener('snakeend', function(event) {do_information_screen(); reset_information.style.display = "none";})
+document.addEventListener('snakeend', function(event) {do_information_screen(); reset_information.style.display = "none"; game_over_time = +new Date;})
 document.addEventListener('gameover', function(event) {reset_information.style.display = ""; calculate_information_position();})
 
 document.addEventListener('drawboard', function(event) {shadow();})
 
 document.addEventListener('touch_game_reset', function(event) {
-  var time = +new Date;
-  if (time - game_over_tap_time < 1000) {snake_direction = 1; return;}
   reset_game();
 })
 
 document.addEventListener('resize', function(event) {if (information == null){return}calculate_information_position();})
 
 document.addEventListener('keydown', function(event) {
-  if (!snake_started) {return;}
   if (event.keyCode != 32) {return;}
+  if (!snake_started) {
+    //start_game();
+    return;
+  }
   if (paused) {
     game_over = false;
     paused = false;
@@ -40,7 +41,6 @@ document.addEventListener('keydown', function(event) {
     var time = +new Date;
     if (time - game_over_time < 1000) {return;}
     alpha = 0;
-    game_over_tap_time = +new Date;
     reset_game();
   } else if (!paused) {
     paused = true;
