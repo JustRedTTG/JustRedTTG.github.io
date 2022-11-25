@@ -11,19 +11,22 @@
   font-size: 4.5mm;
 }
 
-.welcome_button button {
-  background-color: #50DA50;
-  border-color: #20DA20;
+.button {
   border-radius: 20px;
   font-size: 4mm;
   font-weight: bold;
   padding: 2mm;
   color: #FFFFFF;
-  transition: background-color 1s ease-out;
+  transition-duration: 0.4s;
+  cursor: help;
+}
+
+.welcome_button button {
+  background-color: #50DA50;
+  border-color: #20DA20;
 }
 
 .welcome_button button:hover {
   background-color: #D0DA20;
   border-color: #A0DA20;
-  /* transition: 2s; */
 }
