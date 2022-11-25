@@ -8,10 +8,14 @@
     <link rel="stylesheet" href="css/welcome.css" type="text/css">
   </head>
   <body>
-    <div class="welcome_button">
+    <div class="welcome_button" id="welcome">
       <h1>Welcome</h1>
-      <button class="button" onclick="#manual_tour" href="meow">Begin the tour!</button>
     </div>
+    <a href="#manual_tour", id='welcome_a'>
+      <button class="button" onclick="load_tour()">Begin the tour!</button>
+    </a>
+    <div class="welcome_button initially_disabled" id="welcome2"></div>
   </body>
+  <script src="js/tour_manager.js"></script>
   <script> </script>
 </html>

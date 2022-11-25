@@ -2,7 +2,7 @@
   background-color: #50DA50;
   width: 75%;
   margin-left: 12.5%;
-  height: auto;
+  height: 20%;
   display: inline-block;
   position: absolute;
   text-align: center;
@@ -21,12 +21,46 @@
   cursor: help;
 }
 
-.welcome_button button {
+#welcome_a button {
   background-color: #50DA50;
   border-color: #20DA20;
+  position: absolute;
+  width: 30%;
+  margin-left: 35%;
+  margin-top: 42mm;
 }
 
-.welcome_button button:hover {
+#welcome_a button:hover {
   background-color: #D0DA20;
   border-color: #A0DA20;
+}
+
+.initially_disabled {
+  display: none;
+}
+
+.welcome_shape {
+  width: 5px;
+  height: 5px;
+  position: absolute;
+}
+
+.welcome_shape_a {}
+
+.welcome_shape_b {
+  border-radius: 50%;
+}
+
+.welcome_shape_c {}
+
+.welcome_color_a {
+  background-color: #FF2020;
+}
+
+.welcome_color_b {
+  background-color: #20FF20;
+}
+
+.welcome_color_c {
+  background-color: #2020FF;
 }
